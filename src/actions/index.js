@@ -36,6 +36,7 @@ export const locate = coords => async (dispatch) => {
     dispatch(requestLocation(coords));
     const response = await fetch(url, options);
     const data = await response.json();
+    // where you would put if else for errors////////////////////////////////
     dispatch(receiveLocation(coords, data));
   } catch (e) {
     dispatch(error(e));

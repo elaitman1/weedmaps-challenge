@@ -35,7 +35,7 @@ export class App extends Component {
   }
 
   locateMe = () => {
-
+    debugger
     const { dispatch } = this.props;
 
     if (navigator.geolocation) {
@@ -94,6 +94,7 @@ export class App extends Component {
           {regions && (
             <React.Fragment>
               {regionTypes.map(regionType => (
+                <div onClick={this.locateMe}>
                 <ListingGroups key={regionType}>
                   <h2>
                     {getLabel(regions[regionType], regionLabels[regionType])}
@@ -102,6 +103,7 @@ export class App extends Component {
                     listings={get(regions[regionType], 'listings')}
                   />
                 </ListingGroups>
+                </div>
               ))}
             </React.Fragment>
           )}
