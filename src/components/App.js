@@ -34,14 +34,19 @@ export class App extends Component {
     };
   }
 
-  locateMe() {
+  locateMe = () => {
+
     const { dispatch } = this.props;
 
     if (navigator.geolocation) {
+      //now we must get current position
       navigator.geolocation.getCurrentPosition(position => {
         dispatch(locate(position.coords));
       });
     }
+    // else{
+    //   make redux test incase there is an error with getting location and return response if there is an error
+    //   }
   };
 
   render() {
@@ -49,6 +54,7 @@ export class App extends Component {
 
     const getLabel = (listings, label) => {
       if (get(listings, 'listings').length) {
+
         return (
           <div key={label}>
             <strong> {label} </strong>
