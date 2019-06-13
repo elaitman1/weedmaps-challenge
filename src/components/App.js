@@ -7,6 +7,8 @@ import logo from '../assets/logo.png';
 import ListingCards from './listing_cards';
 import Locate from '../icons/locate';
 import MapPin from '../icons/map-pin';
+import { createBrowserHistory } from 'history';
+
 import {
   AppHeader,
   AppWrapper,
@@ -18,7 +20,9 @@ import {
   TextContent,
   LocateButton,
 } from './styles';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import handleDetailListing from '/Users/ericlaitman/Downloads/kali-mist-test-2019-6e2f4b6/src/components/handleDetailListing/handleDetailListing.js'
 const regionTypes = ['delivery', 'dispensary', 'doctor'];
 const regionLabels = {
   delivery: 'Deliveries',
@@ -27,15 +31,14 @@ const regionLabels = {
 };
 
 export class App extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      loadingTimer: 0,
-    };
-  }
+  // constructor(props) {
+  //   super();
+  //   this.state = {
+  //     loadingTimer: 0,
+  //   };
+  // }
 
   locateMe = () => {
-    debugger
     const { dispatch } = this.props;
 
     if (navigator.geolocation) {
@@ -49,12 +52,16 @@ export class App extends Component {
     //   }
   };
 
+  handleDetailListing = () => {
+    debugger
+    this.props.history.push('/handleDetailListing')
+  }
+
   render() {
     const { isLocating, location, regions, error } = this.props;
 
     const getLabel = (listings, label) => {
       if (get(listings, 'listings').length) {
-
         return (
           <div key={label}>
             <strong> {label} </strong>
@@ -63,8 +70,8 @@ export class App extends Component {
       }
       return <div />;
     };
-
     return (
+      <div>
       <AppWrapper>
         <AppHeader>
           <img src={logo} alt="weedmaps logo" />
@@ -94,7 +101,7 @@ export class App extends Component {
           {regions && (
             <React.Fragment>
               {regionTypes.map(regionType => (
-                <div onClick={this.locateMe}>
+                <div onClick={this.handleDetailListing}>
                 <ListingGroups key={regionType}>
                   <h2>
                     {getLabel(regions[regionType], regionLabels[regionType])}
@@ -109,25 +116,38 @@ export class App extends Component {
           )}
         </AppContent>
       </AppWrapper>
+      <Router>
+      <Route path="/handleDetailListing" render={props => <handleDetailListing
+       {...props}/>} />
+      </Router>
+      </div>
     );
   }
 }
 
-const mapStateToProps = state => state.location;
+const mapStateToProps =
+(state, ownProps) => {
+  return {
+    ...state.location,
+    ownProps: state.ownProps
+  };
+}
 
-App.propTypes = {
-  isLocating: PropTypes.bool.isRequired,
-  location: PropTypes.object,
-  regions: PropTypes.object,
-  dispatch: PropTypes.any,
-  error: PropTypes.object,
-};
+// App.propTypes = {
+//   isLocating: PropTypes.bool.isRequired,
+//   location: PropTypes.object,
+//   regions: PropTypes.object,
+//   dispatch: PropTypes.any,
+//   error: PropTypes.object,
+// };
+//
+// App.defaultProps = {
+//   isLocating: false,
+//   location: {},
+//   regions: {},
+//   error: {},
+// };
 
-App.defaultProps = {
-  isLocating: false,
-  location: {},
-  regions: {},
-  error: {},
-};
-
-export default connect(mapStateToProps)(App);
+export default connect(
+  mapStateToProps
+)(App);
